@@ -21,8 +21,87 @@ angular.module('starter.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller('AccountCtrl', function($scope, $ionicModal) {
   $scope.settings = {
-    enableFriends: false
+    enableFriends: true
   };
+  $scope.pokemon = [
+    { id: 1, title: 'Titre 1', icon: 'ion-analytics'},
+    { id: 2, title: 'Titre 2', icon: 'ion-happy-outline'},
+    { id: 3, title: 'Titre 3', icon: 'ion-bowtie'},
+    { id: 4, title: 'Titre 4', icon: 'ion-android-bus'},
+    { id: 5, title: 'Titre 5', icon: 'ion-social-angular'},
+    { id: 6, title: 'Titre 6', icon: 'ion-social-freebsd-devil'}
+  ];
+    $ionicModal.fromTemplateUrl('templates/login.html', {
+     scope: $scope,
+     animation: 'slide-in-up'
+  }).then(function(modal) {
+      $scope.loginModal = modal;
+  });
+
+
+}).controller('TestCtrl', function($scope, $ionicPopup) {
+  // Triggered on a button click, or some other target
+  $scope.showPopup = function() {
+    $scope.data = {};
+
+    // popup perso
+    var myPopup = $ionicPopup.show({
+      template: '<input type="password" ng-model="data.wifi">',
+      title: 'Saisir le mot de passe Wi-Fi',
+      scope: $scope,
+      buttons: [
+        { text: 'Annuler' },
+        {
+          text: '<b>Enregistrer</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            if (!$scope.data.wifi) {
+              //ne pas autoriser la fermeture si le mot de passe n'est pas saisi
+              e.preventDefault();
+            } else {
+              return $scope.data.wifi;
+            }
+          }
+        }
+      ]
+    });
+
+    myPopup.then(function(res) {
+      console.log('Saisi!', res);
+    });
+
+    $timeout(function() {
+       myPopup.close(); //fermeture de la popup après 3 secondes
+    }, 3000);
+   };
+
+   // popup de confirmations
+   $scope.showConfirm = function() {
+     var confirmPopup = $ionicPopup.confirm({
+       title: 'Manger une glace',
+       template: 'Etes-vous sûr de vouloir manger cette glace?'
+     });
+
+     confirmPopup.then(function(res) {
+       if(res) {
+         console.log('Vous êtes sûr');
+       } else {
+         console.log('Vous n\'êtes pas sûr');
+       }
+     });
+   };
+
+   // popup d'alerte
+   $scope.showAlert = function() {
+     var alertPopup = $ionicPopup.alert({
+       title: 'Ne mangez pas ça!',
+       template: 'Le goût semble bon'
+     });
+
+     alertPopup.then(function(res) {
+       console.log('Merci de ne pas avoir mangé ce cône glacé!');
+     });
+   };
 });
